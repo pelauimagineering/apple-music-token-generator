@@ -11,7 +11,7 @@ First, you must follow the instructions at [Apple Music API Reference](https://d
 Next, follow the instructions below to help create your developer token in the JSON Web Token format.
 
 
-### Prerequisites
+## Prerequisites
 
 A developer machine running macOS Sierra (10.12.5)
 You will need to run Terminal and have root access, or can run sudo
@@ -22,7 +22,18 @@ After following the instructions at the URL above, you should now have 3 pieces 
 - your 10-digit Apple Developer Account Team ID
 
 
-### Installing
+## Installing
+
+### Step 1
+
+### Easy method:
+
+Run the following on the command line:
+```
+sudo easy_install pip
+```
+
+### Old method: 
 
 Download the Python package manager from [pip](https://pip.pypa.io/en/stable/installing/)
 
@@ -35,6 +46,8 @@ Install Python package manager
 ```
 sudo python get-pip.py
 ```
+
+### Step 2
 
 Now that the Python Package Manager (pip) is installed, use it to install the Python JWT library
 
