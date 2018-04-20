@@ -2,6 +2,11 @@
 
 Some steps that help getting started creating the Apple Music JWT tokens needed to use MusicKit on iOS
 
+## Recent Change
+
+Added a Ruby version of the solution.
+
+
 ## Getting Started
 
 These instructions supplement the information found in the Get Started section of the Apple Music API Reference documents.
