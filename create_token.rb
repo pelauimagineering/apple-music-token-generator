@@ -23,8 +23,7 @@ time_expired = Time.now.to_i + hours_to_live * 3600
 algorithm = 'ES256'
 
 headers = {
-  'typ': 'JWT',
-	'alg': algorithm,
+	'typ': 'JWT',
 	'kid': keyId
 }
 
