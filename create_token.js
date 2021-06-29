@@ -103,8 +103,14 @@ if(dataReady) {
     jwt.sign(payload, privateKey, {header: headers}, async function(error, token) {
         if(error){
             console.error(error);
+            process.exit(1);
         }
-        //console.log(token);
+
+        if(!VALIDATE_TOKEN){
+            writeToFile('token.jwt', token);
+            process.exit(0);
+        }
+
         console.log("Testing token... \n")
         // test generated token against Apple Music API...
         let url = 'https://api.music.apple.com/v1/catalog/ca/genres';
