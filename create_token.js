@@ -4,6 +4,17 @@ const fs = require('fs');
 const inquirer = require('inquirer');
 const fetch = require("node-fetch");
 
+// Flags
+
+// Set VALIDATE_TOKEN to false to skip the
+// fetch request validation step and just 
+// generate the token ('offline mode')
+const VALIDATE_TOKEN = true;
+
+// Set SAVE_TO_FILE to false to simply
+// log the output JWT to the console
+const SAVE_TO_FILE = true;
+
 const now = Math.floor((Date.now() / 1000));
 const alg = 'ES256';
 const headers = {
@@ -78,6 +89,13 @@ if(process.argv.length >= 3 && process.env.TEAM_ID && process.env.KEY_ID){
         })
 }
 
+// Define writeToFile function
+function writeToFile(fileName, data) {
+	fs.writeFile(fileName, data, (err) =>
+		err ? console.log(err) : console.log('JWT Saved!')
+	);
+}
+
 // JWT are formed formed like:
 // jwt.sign(payload, secretOrPrivateKey, [options, callback])
 if(dataReady) {
@@ -86,9 +104,9 @@ if(dataReady) {
         if(error){
             console.error(error);
         }
-        console.log(token);
+        //console.log(token);
         console.log("Testing token... \n")
-        // test token...
+        // test generated token against Apple Music API...
         let url = 'https://api.music.apple.com/v1/catalog/ca/genres';
         if(process.argv.indexOf('--test') > -1){
             url = 'https://api.music.apple.com/v1/test';
@@ -99,14 +117,33 @@ if(dataReady) {
             }
         })
         .then(response => {
-            if(response.status == 401){
+            // Catch test error and stop
+            if(response.status === 401){
                 console.log('401');
-            } else {
-                console.log(response);
+                console.log('The generated token is unauthorized to access the Apple Music API');
+                process.exit(1);
+            } else if(response.status === 429) {
+                if(process.argv.indexOf('--test') > -1){
+                    console.log('✅ Test passed');
+                    process.exit(0);
+                } else {
+                    console.log('The generated token was rejected by the Apple Music API.');
+                    console.log(`Status: ${response.status} Message: ${response.statusText}`);
+                    process.exit(1);
+                }
             }
             return response.json();
         })
-        .then(json => console.log(json))
+        .then(json => {
+            if(json) { 
+                console.log('✅ Test passed');
+            } else {
+                console.log('❌ Test failed');
+                console.log('The JWT was generated but there was an error when it was presented ')
+            }
+            // save the generated to token to a jwt file in the current directory
+            writeToFile('token.jwt', token);
+        })
         .catch(error => {
             console.error(error);
         })
@@ -115,5 +152,5 @@ if(dataReady) {
         console.error(error);
     }
 } else {
-    console.error("The data was not properly processed to create a JWT.");
+    console.error("😬 The data was not properly processed to create a JWT.");
 }
