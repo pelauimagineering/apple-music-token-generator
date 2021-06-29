@@ -1,0 +1,30 @@
+{
+  "name": "apple-music-token-generator",
+  "version": "1.0.0",
+  "description": "Some steps that help getting started creating the Apple Music JWT tokens needed to use MusicKit",
+  "main": "create_token.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pelauimagineering/apple-music-token-generator.git"
+  },
+  "keywords": [
+    "Apple",
+    "Music",
+    "API",
+    "key",
+    "JWT",
+    "generator"
+  ],
+  "author": "pelauimagineering",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pelauimagineering/apple-music-token-generator/issues"
+  },
+  "homepage": "https://github.com/pelauimagineering/apple-music-token-generator#readme",
+  "dependencies": {
+    "jsonwebtoken": "^8.5.1"
+  }
+}
