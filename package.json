@@ -1,6 +1,6 @@
 {
   "name": "apple-music-token-generator",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "Some steps that help getting started creating the Apple Music JWT tokens needed to use MusicKit",
   "main": "create_token.js",
   "scripts": {
