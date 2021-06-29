@@ -2,32 +2,49 @@ require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const inquirer = require('inquirer');
+const fetch = require("node-fetch");
 
-const hours_to_live = 24
-const header = {
-	'typ': 'JWT',
+const now = Math.floor((Date.now() / 1000));
+const alg = 'ES256';
+const headers = {
+    'alg': alg,
 	'kid': ''
 }
+// Exp is set to now + 6 months
+// which is the max time allowed for a 
+// jwt to exist for the Apple Music API.
+// Change 15777000 to something else
+// if you want it to expires sooner.
 const payload = {
 	'iss': '',
-	'exp': Math.floor((Date.now() / 1000) + hours_to_live * 3600),
-	'iat': Math.floor(Date.now() / 1000)
+	'exp': now + 15777000,
+	'iat': now
 }
 
-//const privateKey = fs.readFileSync('private.key');
-//const keyId = 'YOUR-10-DIGIT-APPLE-MUSIC-KEY-IDENTIFIER'
-//const teamId = 'YOUR-10-DIGIT-APPLE-TEAM-ID'
-
 let privateKey;
+let dataReady = false;
 
-if(process.argv.length === 3){
-    // arg[0] - private key
-    // arg[1] - keyId
-    // arg[2] - teamId
-} else if(process.argv.length === 1 && process.env.TEAM_ID && process.env.KEY_ID){
-    privateKey = fs.readFileSync(response.privateKeyFilename);
+// You can configure your teamID and Key ID 
+// by adding a .env file to this directory 
+// and setting TEAM_ID and KEY_ID
+// the pass your .p8 private key path in as an 
+// argument to `npm run generate`
+
+if(process.argv.length >= 3 && process.env.TEAM_ID && process.env.KEY_ID){
+    if(process.argv.indexOf('--test') > -1){
+        console.log('Generating test token\n');
+        privateKey = fs.readFileSync('too-many-requests.p8');
+        headers.kid = 'CapExedKid';
+        payload.iss = 'CapExdTeam';
+    } else {
+        privateKey = fs.readFileSync(process.argv[2]);
+        payload.iss = process.env.TEAM_ID;
+        headers.kid = process.env.KEY_ID;
+    }
+    dataReady = true;
 } else {
     // Use inquirer to collect information from user via command line
+    // if nothing passed
     inquirer
         .prompt([
             {
@@ -47,14 +64,56 @@ if(process.argv.length === 3){
             },
         ])
         .then((response) => {
-            privateKey = fs.readFileSync(response.privateKeyFilename);
+            try {
+                privateKey = fs.readFileSync(response.privateKeyFilename);
+            } catch (error) {
+                console.error(error);
+            }
             payload.iss = response.teamId;
-            header.kid = response.kid;
+            headers.kid = response.kid;
+            dataReady = true;
+        })
+        .catch(error => {
+            console.error(error);
         })
 }
 
-// formed like:
+// JWT are formed formed like:
 // jwt.sign(payload, secretOrPrivateKey, [options, callback])
-jwt.sign(payload, privateKey, { algorithm: 'RS256', header }, function(error, token) {
-    console.log(token);
-});
+if(dataReady) {
+    try {
+    jwt.sign(payload, privateKey, {header: headers}, async function(error, token) {
+        if(error){
+            console.error(error);
+        }
+        console.log(token);
+        console.log("Testing token... \n")
+        // test token...
+        let url = 'https://api.music.apple.com/v1/catalog/ca/genres';
+        if(process.argv.indexOf('--test') > -1){
+            url = 'https://api.music.apple.com/v1/test';
+        }
+        await fetch(url, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        .then(response => {
+            if(response.status == 401){
+                console.log('401');
+            } else {
+                console.log(response);
+            }
+            return response.json();
+        })
+        .then(json => console.log(json))
+        .catch(error => {
+            console.error(error);
+        })
+    });
+    } catch(error) {
+        console.error(error);
+    }
+} else {
+    console.error("The data was not properly processed to create a JWT.");
+}
