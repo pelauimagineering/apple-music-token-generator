@@ -107,7 +107,7 @@ if(dataReady) {
         }
 
         if(!VALIDATE_TOKEN){
-            writeToFile('token.jwt', token);
+            SAVE_TO_FILE ? writeToFile('token.jwt', token) : console.log(token);
             process.exit(0);
         }
 
@@ -124,11 +124,11 @@ if(dataReady) {
         })
         .then(response => {
             // Catch test error and stop
-            if(response.status === 401){
+            if(response.status == 401){
                 console.log('401');
                 console.log('The generated token is unauthorized to access the Apple Music API');
                 process.exit(1);
-            } else if(response.status === 429) {
+            } else if(response.status == 429) {
                 if(process.argv.indexOf('--test') > -1){
                     console.log('✅ Test passed');
                     process.exit(0);
@@ -147,8 +147,9 @@ if(dataReady) {
                 console.log('❌ Test failed');
                 console.log('The JWT was generated but there was an error when it was presented ')
             }
-            // save the generated to token to a jwt file in the current directory
-            writeToFile('token.jwt', token);
+            // Save the generated to token to a jwt file in the current directory
+            // or log to console.
+            SAVE_TO_FILE ? writeToFile('token.jwt', token) : console.log(token);
         })
         .catch(error => {
             console.error(error);
