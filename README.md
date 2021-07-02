@@ -4,7 +4,7 @@ Some steps that help getting started creating the Apple Music JWT tokens needed 
 
 ## Recent Change
 
-Added a Ruby version of the solution.
+Added a NodeJS version.
 
 
 ## Getting Started
@@ -27,7 +27,7 @@ After following the instructions at the URL above, you should now have 3 pieces 
 - your 10-digit Apple Developer Account Team ID
 
 
-## Installing
+## Installing (Python)
 
 ### Step 1
 
@@ -106,6 +106,39 @@ The script will output a sample curl command you can run to see if you were succ
 
 ```
 
+## Installing and Running in Node
+
+### System requirements
+Ensure you have a current version of Node and npm running on your system.
+
+### Installation
+Download the repo and run ```npm install``` in the project directory to install dependancies.
+
+### Configuration
+The project supports ```.env``` and you can add the following to your own ```.env``` file in the project directory.
+
+```
+TEAM_ID=[YOUR_TEAM_ID_FROM_APPLE]
+KEY_ID=[YOUR_KEY_ID_FROM_APPLE]
+```
+
+### Running
+There are two ways of using the Node create_token.js package:
+
+In the project directory, run ```npm run generate``` and pass in the filename to your .p8 private key file.
+
+** *OR* **
+
+Simply run ```npm run generate``` follow the on screen prompts.
+
+- provide the file path/name
+- provide your Team ID
+- provide your Key ID
+
+
+### Testing
+The script has built in tests and will display test results during runtime.
+If you wish to skip the validation step (i.e. 'offline mode'), configure the ```VALIDATE_TOKEN``` flag in create_token.js
 
 ## Contributing
 
@@ -116,7 +149,7 @@ Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduc
 
 * **Anonymous Apple Marketing Guy** - *Initial work* - [Anonymous]
 * **Darren Baptiste** - *First Commit* - [Pelau Imagineering](https://github.com/pelauimagineering)
-
+* **Nate Blake** - *NodeJS version* - [n8blake](https://n8blake.com)
 
 ## License
 
