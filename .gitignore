@@ -1,3 +1,8 @@
 build/
 dist/
 *.egg-info/
+node_modules
+.DS_Store
+.env
+token.jwt
+package-lock.json
