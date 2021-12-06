@@ -4,6 +4,7 @@ Some steps that help getting started creating the Apple Music JWT tokens needed 
 
 ## Recent Change
 
+
 Added a NodeJS version.
 
 
@@ -29,82 +30,22 @@ After following the instructions at the URL above, you should now have 3 pieces 
 
 ## Installing (Python)
 
-### Step 1
-
-### Easy method:
-
 Run the following on the command line:
 ```
-sudo easy_install pip
+cd apple-music-token-generator
+python setup.py install
 ```
 
-### Old method: 
-
-Download the Python package manager from [pip](https://pip.pypa.io/en/stable/installing/)
-
-```
-Download the get-pip.py script from https://pip.pypa.io/en/stable/installing/
-```
-
-Install Python package manager
-
-```
-sudo python get-pip.py
-```
-
-### Step 2
-
-Now that the Python Package Manager (pip) is installed, use it to install the Python JWT library
-
-```
-sudo pip install pyjwt
-```
-
-Add the necessary Cryptography package
-
-```
-sudo pip install cryptography
-```
-
-All of that was just housekeeping to get you ready for the main event... actually generating the token.
-
-Use you favourite editor to customize the script that will create your token.
-
-```
-open -e music_token.py
-```
-
-Copy your MusicKit private key from the .p8 file you generated and downloaded.
-
-```
-secret = """-----BEGIN PRIVATE KEY-----
-REPLACE-THIS-WITH-YOUR-OWN-PRIVATE-KEY
------END PRIVATE KEY-----"""
-```
-
-Substitute your 10-digit key identifier (kid) as found in your developer account
-
-```
-keyId = "9876543210"
-```
-
-Substitute your 10-digit Apple Developer Team ID
-
-```
-teamId = "0123456789"
-```
+## Usage
 
 Run the script
 
 ```
-> python music_token.py
+apple-music-token --auth_key ./AuthKey_0123456789.p8 --key_id 9876543210 --team_id 01234567890123456789 --curl
 ```
 
 The script will output a sample curl command you can run to see if you were successful.
 
-```
-
-```
 
 ## Installing and Running in Node
 
