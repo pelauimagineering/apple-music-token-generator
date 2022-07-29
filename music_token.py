@@ -7,14 +7,14 @@ import jwt
 
 
 secret = """-----BEGIN PRIVATE KEY-----
-ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ0123
+ENTER PRIVATE KEY FROM .p8 file
 -----END PRIVATE KEY-----"""
-keyId = "0123456789"
-teamId = "9876543210"
-alg = 'ES256'
+keyId = "ENTER KEY ID"
+teamId = "ENTER TEAM ID"
+alg = "ES256"
 
 time_now = datetime.datetime.now()
-time_expired = datetime.datetime.now() + datetime.timedelta(hours=12)
+time_expired = datetime.datetime.now() + datetime.timedelta(hours=730)
 
 headers = {
 	"alg": alg,
@@ -23,8 +23,8 @@ headers = {
 
 payload = {
 	"iss": teamId,
-	"exp": int(time_expired.strftime("%s")),
-	"iat": int(time_now.strftime("%s"))
+	"iat": time_now
+	"exp": time_expired
 }
 
 
@@ -33,8 +33,7 @@ if __name__ == "__main__":
 	token = jwt.encode(payload, secret, algorithm=alg, headers=headers)
 
 	print "----TOKEN----"
-	print token
+	print (token)
 
 	print "----CURL----"
-	print "curl -v -H 'Authorization: Bearer %s' \"https://api.music.apple.com/v1/catalog/us/artists/36954\" " % (token)
-
+	print ("curl -v -H 'Authorization: Bearer %s' \"https://api.music.apple.com/v1/catalog/us/artists/36954\" " % (token))
